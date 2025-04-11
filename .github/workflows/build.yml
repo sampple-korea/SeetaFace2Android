@@ -3,7 +3,7 @@ name: Build APK
 on:
   push:
     branches:
-      - main
+      - '**' # 모든 브랜치에 대해 트리거
   pull_request:
 
 jobs:
