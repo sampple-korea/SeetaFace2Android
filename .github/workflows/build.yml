@@ -1,0 +1,42 @@
+name: Build APK
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # 2. Set up Java environment (required for Gradle)
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '11' # 프로젝트에 맞는 Java 버전 선택
+
+    # 3. Set up Android SDK
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v2
+      with:
+        api-level: 31 # 필요한 API Level
+        ndk: true # NDK가 필요한 경우 true로 설정
+
+    # 4. Build the project
+    - name: Build APK
+      run: ./gradlew assembleRelease # 또는 assembleDebug
+
+    # 5. Upload the APK as an artifact
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-release
+        path: app/build/outputs/apk/release/*.apk # APK 경로
