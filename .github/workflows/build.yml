@@ -11,14 +11,10 @@ jobs:
     name: Build APK
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-      actions: write
-
     steps:
     # 1. Checkout the repository
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     # 2. Set up Java environment (required for Gradle)
     - name: Set up JDK
@@ -40,7 +36,7 @@ jobs:
 
     # 5. Upload the APK as an artifact
     - name: Upload APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: app-release
         path: app/build/outputs/apk/release/*.apk
