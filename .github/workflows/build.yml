@@ -21,18 +21,18 @@ jobs:
       uses: actions/setup-java@v3
       with:
         distribution: 'zulu'
-        java-version: '11' # 프로젝트에 맞는 Java 버전 선택
-
+        java-version: '17' # Java 11에서 17로 변경
+        
     # 3. Set up Android SDK
     - name: Set up Android SDK
       uses: android-actions/setup-android@v2
       with:
-        api-level: 31 # 필요한 API Level
-        ndk: true # NDK가 필요한 경우 true로 설정
+        api-level: 31
+        ndk: true
 
     # 4. Build the project
     - name: Build APK
-      run: ./gradlew assembleRelease # 또는 assembleDebug
+      run: ./gradlew assembleRelease
 
     # 5. Upload the APK as an artifact
     - name: Upload APK
