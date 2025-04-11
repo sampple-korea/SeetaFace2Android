@@ -16,25 +16,47 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # 2. Set up Java environment (required for Gradle)
+    # 2. Set up Java environment
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
         distribution: 'zulu'
-        java-version: '17' # Java 11에서 17로 변경
-        
-    # 3. Set up Android SDK
-    - name: Set up Android SDK
-      uses: android-actions/setup-android@v2
-      with:
-        api-level: 31
-        ndk: true
+        java-version: '17'
 
-    # 4. Build the project
+    # 3. Android SDK 설정
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3 # v2에서 v3로 업데이트
+      
+    # 4. Android SDK 라이센스 동의
+    - name: Accept Android SDK licenses
+      run: |
+        echo "y" | sdkmanager --licenses
+        
+    # 5. Android SDK 패키지 설치
+    - name: Install Android SDK packages
+      run: |
+        sdkmanager "platforms;android-31" "build-tools;33.0.2" "ndk;25.2.9519653"
+      
+    # 6. Gradle 캐싱 설정 (빌드 속도 향상)
+    - name: Setup Gradle Cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    # 7. Gradle 실행 권한 부여
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    # 8. APK 빌드
     - name: Build APK
       run: ./gradlew assembleRelease
 
-    # 5. Upload the APK as an artifact
+    # 9. APK 아티팩트 업로드
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
